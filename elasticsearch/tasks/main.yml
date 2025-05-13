@@ -1,0 +1,6 @@
+---
+# tasks file for elasticsearch
+- include_tasks: install_java.yml
+- include_tasks: install_elastic.yml
+- include_tasks: configure.yml
+

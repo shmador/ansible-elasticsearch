@@ -1,0 +1,15 @@
+- name: Wait for SSH on all elasticsearch hosts
+  hosts: es__master
+  gather_facts: false
+  tasks:
+    - name: Wait for SSH to become available
+      ansible.builtin.wait_for_connection:
+        timeout: 300
+        delay: 5
+
+- name: Install and configure Elasticsearch
+  hosts: es__master
+  become: true
+  gather_facts: true
+  roles:
+    - elasticsearch

@@ -1,0 +1,16 @@
+plugin: aws_ec2
+regions:
+  - il-central-1
+
+filters:
+  "tag:Group": "elasticsearch"
+  "instance-state-name": ["pending","running"]
+
+keyed_groups:
+  - key: tags.Role
+    prefix: es_
+
+compose:
+  ansible_host: public_ip_address
+
+

@@ -1,0 +1,29 @@
+- name: Add Elasticsearch GPG key
+  ansible.builtin.apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Add Elasticsearch APT repo
+  ansible.builtin.apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/{{ es_version }}/apt stable main"
+    state: present
+    filename: "elastic-{{ es_version }}"
+  when: ansible_os_family == "Debian"
+
+- name: Add Elasticsearch YUM repo
+  ansible.builtin.yum_repository:
+    name: "elastic-{{ es_version }}"
+    description: "Elasticsearch repository for {{ es_version }}"
+    baseurl: "https://artifacts.elastic.co/packages/{{ es_version }}/yum"
+    gpgcheck: yes
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    enabled: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Install Elasticsearch package
+  ansible.builtin.package:
+    name: elasticsearch
+    state: present
+
+
