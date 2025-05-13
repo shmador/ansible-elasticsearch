@@ -48,10 +48,6 @@ After Terraform finishes, configure the software stack with Ansible:
    ```bash
    ansible-playbook -i inventory/hosts.ini main.yml
    ```
-   If your `ansible.cfg` specifies the inventory and private key, you can simply run:
-   ```bash
-   ansible-playbook main.yml
-   ```
    Ansible will SSH into each EC2 instance, install the specified version of Elasticsearch, configure the cluster, and start the service.
 
 ### 3. Full Automation (`run.sh`)
@@ -67,4 +63,4 @@ This script will (in order) initialize and apply the Terraform configuration, th
 
 ---
 
-Congratulations! Once these steps complete, you will have a running Elasticsearch cluster on AWS. You can connect to any node (its public DNS/IP) on port 9200 to interact with the cluster’s REST API. Adjust any cluster-specific settings (such as index or security configurations) via Ansible variables or additional playbooks as needed.
+You will no have a running Elasticsearch cluster on AWS. You can connect to any node (its public DNS/IP) on port 9200 to interact with the cluster’s REST API. Adjust any cluster-specific settings (such as index or security configurations) via Ansible variables or additional playbooks as needed.
