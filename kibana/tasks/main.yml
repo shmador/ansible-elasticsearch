@@ -1,0 +1,75 @@
+---
+- name: Ensure HTTPS transport and utilities are installed (Debian)
+  apt:
+    name: apt-transport-https
+    state: present
+    update_cache: yes
+  when: ansible_facts.os_family == "Debian"
+
+- name: Ensure yum-utils is installed (RHEL)
+  yum:
+    name: yum-utils
+    state: present
+  when: ansible_facts.os_family == "RedHat"
+
+- name: Add Elastic GPG key (Debian & RHEL)
+  apt_key:
+    url: "{{ elastic_gpg_key }}"
+    state: present
+  when: ansible_facts.os_family == "Debian"
+  
+- name: Add Elastic GPG key (RHEL)
+  rpm_key:
+    state: present
+    key: "{{ elastic_gpg_key }}"
+  when: ansible_facts.os_family == "RedHat"
+
+- name: Add Elastic APT repository
+  apt_repository:
+    repo: "deb {{ elastic_apt_repo_url }} stable main"
+    state: present
+    filename: elastic-{{ kibana_version.split('.')[0] }}-x
+  when: ansible_facts.os_family == "Debian"
+
+- name: Add Elastic YUM/DNF repository
+  yum_repository:
+    name: "elastic-{{ kibana_version.split('.')[0] }}-x"
+    description: "Elastic repository for {{ kibana_version.split('.')[0] }}.x packages"
+    baseurl: "{{ elastic_yum_repo_url }}"
+    gpgcheck: yes
+    gpgkey: "{{ elastic_gpg_key }}"
+    enabled: yes
+  when: ansible_facts.os_family == "RedHat"
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  when: ansible_facts.os_family == "Debian"
+
+- name: Install Kibana on Debian
+  apt:
+    name: "kibana={{ kibana_version }}"
+    state: "{{ kibana_package_state }}"
+  when: ansible_facts.os_family == "Debian"
+
+- name: Install Kibana on RHEL
+  yum:
+    name: "kibana-{{ kibana_version }}"
+    state: "{{ kibana_package_state }}"
+  when: ansible_facts.os_family == "RedHat"
+
+- name: Deploy kibana.yml
+  template:
+    src: kibana.yml.j2
+    dest: /etc/kibana/kibana.yml
+    owner: kibana
+    group: kibana
+    mode: '0644'
+  notify: restart kibana
+
+- name: Ensure Kibana service is enabled and started
+  service:
+    name: kibana
+    state: started
+    enabled: yes
+

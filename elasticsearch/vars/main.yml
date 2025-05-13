@@ -1,15 +1,5 @@
 cluster_name: "my-es-cluster"
 
-seed_hosts:
-  - "es-master1"
-  - "es-master2"
-  - "es-master3"
-
-initial_master_nodes:
-  - "es-master1"
-  - "es-master2"
-  - "es-master3"
-
 es_version: "8.x"
 
 enable_security: false

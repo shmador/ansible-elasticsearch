@@ -1,0 +1,15 @@
+---
+# default variables for kibana role
+kibana_version: "8.8.0"
+kibana_package_state: present
+
+# Elastic repository info
+elastic_apt_repo_url: "https://artifacts.elastic.co/packages/{{ kibana_version.split('.')[0] }}.x/apt"
+elastic_yum_repo_url: "https://artifacts.elastic.co/packages/{{ kibana_version.split('.')[0] }}.x/yum"
+elastic_gpg_key: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
+
+# Kibana configuration
+kibana_listen_host: "0.0.0.0"
+kibana_server_port: 5601
+elasticsearch_url: "http://localhost:9200"
+

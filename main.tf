@@ -32,39 +32,53 @@ resource "aws_key_pair" "deployer" {
 #-----------------------------------
 resource "aws_security_group" "es_sg" {
   name        = "es-sg"
-  description = "Allow SSH, Elasticsearch HTTP & transport"
+  description = "Allow SSH, Elasticsearch HTTP & transport, and Kibana"
 
+  # SSH
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "SSH access"
   }
 
+  # Elasticsearch HTTP
   ingress {
     from_port   = 9200
     to_port     = 9200
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Elasticsearch REST API"
   }
 
+  # Elasticsearch transport
   ingress {
     from_port   = 9300
     to_port     = 9300
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Elasticsearch transport (cluster) communication"
+    description = "Elasticsearch cluster transport"
   }
 
+  # Kibana HTTP
+  ingress {
+    from_port   = 5601
+    to_port     = 5601
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Kibana web interface"
+  }
+
+  # Allow all outbound
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
   }
 }
-
-
 #-----------------------------------
 # AMI Lookup (Ubuntu 22.04 LTS)
 #-----------------------------------
@@ -84,7 +98,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "es_master" {
   count         = 3
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.small"
+  instance_type = "t3.medium"
 
   key_name               = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [aws_security_group.es_sg.id]

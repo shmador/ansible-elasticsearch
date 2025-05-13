@@ -13,3 +13,4 @@
   gather_facts: true
   roles:
     - elasticsearch
+    - kibana
