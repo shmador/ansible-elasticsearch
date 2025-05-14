@@ -1,28 +1,43 @@
 # elasticsearch
 
-A combined **Terraform** and **Ansible** solution to provision and configure an Elasticsearch cluster on AWS EC2.
+A combined **Terraform** and **Ansible** solution to provision and configure an Elasticsearch & Kibana cluster on AWS EC2.
 
 ## Overview
 
-This project automates the deployment of a multi-node Elasticsearch cluster on Amazon AWS. The Terraform scripts launch EC2 instances, set up networking (VPC, security group rules for Elasticsearch), and generate an SSH key pair. The custom Ansible role (`elasticsearch/`) then installs and configures Elasticsearch on those instances, forming a cluster. This separation of concerns—Terraform for infrastructure and Ansible for software configuration—makes the setup reproducible and easy to maintain.
+This project automates the deployment of a multi‑node Elasticsearch and Kibana cluster on Amazon AWS.  
+- **Terraform** scripts launch EC2 instances, set up networking (VPC, security groups for Elasticsearch and Kibana ports), and generate an SSH key pair.  
+- The custom **Ansible** roles (`elasticsearch/` and `kibana/`) then install and configure Elasticsearch and Kibana on those instances, forming a fully operational cluster and front‑end.  
+
+This separation—Terraform for infrastructure and Ansible for software configuration—makes the setup reproducible and easy to maintain.
 
 ## Main Features
 
-- **Custom Ansible Role:** A dedicated role in `elasticsearch/` installs and configures Elasticsearch on each node. It handles package installation, service setup, and cluster configuration automatically.  
-- **OS Support:** Works on both Debian-family (e.g. Ubuntu) and RedHat-family (e.g. CentOS/RHEL) Linux distributions. The role detects the OS and uses the appropriate package manager (APT or YUM) and service commands.  
-- **Version Selection:** You can specify the Elasticsearch version via Ansible variables (e.g. `es_version` in `defaults/main.yml`), allowing deployment of any supported 6.x or 7.x release.  
-- **Optional Security:** Enables optional X-Pack security features through variables. For example, setting a flag can turn on TLS and authentication on the Elasticsearch cluster.  
-- **Terraform Provisioning:** The Terraform configuration (`main.tf`) creates AWS resources: it launches EC2 instances (one per cluster node by default), creates a security group (opening ports 9200 for HTTP and 9300 for transport), and generates an SSH key pair. The private key is saved locally for Ansible to use, and the public key is registered with AWS.  
-- **Terraform & Ansible Integration:** After provisioning, Terraform outputs are used to generate an Ansible inventory (`inventory/hosts.ini`) listing the new EC2 instances. The included `ansible.cfg` is pre-configured to use this inventory and the generated SSH key. Ansible then targets these hosts to apply the Elasticsearch role.  
-- **Automation Script:** A `run.sh` Bash script ties everything together for CI-like automation. Executing `run.sh` will automatically run Terraform and then the Ansible playbook in sequence, enabling one-command deployment of the full cluster.
+- **Custom Ansible Roles**  
+  - `elasticsearch/` role installs and configures Elasticsearch on each node.  
+  - `kibana/` role installs and configures Kibana on each node, ensuring it connects back to the local Elasticsearch cluster.  
+- **OS Support**  
+  - Works on both Debian‑family (e.g. Ubuntu) and RedHat‑family (e.g. CentOS/RHEL) distributions.  
+  - Each role detects the OS and uses the appropriate package manager (APT or YUM) and service manager (systemd).  
+- **Version Selection**  
+  - Specify Elasticsearch and Kibana versions via Ansible defaults (e.g. `es_version` and `kibana_version`).  
+- **Optional Security**  
+  - Enable optional X‑Pack security features (TLS, authentication) for Elasticsearch and Kibana via Ansible variables.  
+- **Terraform Provisioning**  
+  - Creates AWS resources: EC2 instances (one per cluster node by default), security groups (opening ports 9200/9300 for ES, 5601 for Kibana), and an SSH key pair.  
+  - The private key is saved locally; the public key is registered with AWS.  
+- **Terraform & Ansible Integration**  
+  - Terraform outputs generate an Ansible inventory (`inventory/hosts.ini`) listing the new EC2 instances.  
+  - `ansible.cfg` is pre‑configured to use this inventory and the generated SSH key.  
+- **Automation Script**  
+  - `run.sh` ties everything together for CI‑style automation: Terraform then Ansible (both Elasticsearch and Kibana roles) in one command.
 
 ## Requirements
 
-- **AWS Account:** You must have an AWS account with permissions to create EC2 instances, security groups, and key pairs.  
-- **Terraform (v0.12+):** Terraform must be installed and in your `PATH`. This project’s configuration is written for Terraform 0.12 or later.  
-- **Ansible (v2.9+):** Ansible must be installed (version 2.9 or later recommended) to run the playbooks and roles.  
-- **AWS Credentials:** Configure your AWS credentials so that Terraform can authenticate (e.g. by exporting `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, or by configuring the AWS CLI).  
-- **SSH Key:** The Terraform provisioning will generate an SSH key pair automatically. The private key is stored in the project directory (as specified in `ansible.cfg`), and Ansible is configured to use this key to SSH into the EC2 instances.
+- **AWS Account:** Permissions to create EC2 instances, security groups, and key pairs.  
+- **Terraform (v0.12+):** Installed and in your `PATH`.  
+- **Ansible (v2.9+):** Installed to run playbooks and roles.  
+- **AWS Credentials:** Export via environment variables or configure via AWS CLI.  
+- **SSH Key:** Automatically generated by Terraform (private key stored in project root, referenced by `ansible.cfg`).
 
 ## Setup and Usage
 
