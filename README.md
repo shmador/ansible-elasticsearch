@@ -78,4 +78,4 @@ This script will (in order) initialize and apply the Terraform configuration, th
 
 ---
 
-You will no have a running Elasticsearch cluster on AWS. You can connect to any node (its public DNS/IP) on port 9200 to interact with the cluster’s REST API. Adjust any cluster-specific settings (such as index or security configurations) via Ansible variables or additional playbooks as needed.
+You will now have a running Elasticsearch cluster on AWS. You can connect to any node (its public DNS/IP) on port 9200 to interact with the cluster’s REST API. Adjust any cluster-specific settings (such as index or security configurations) via Ansible variables or additional playbooks as needed.
