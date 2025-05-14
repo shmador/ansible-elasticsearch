@@ -61,7 +61,7 @@ After Terraform finishes, configure the software stack with Ansible:
 1. **Check Inventory:** Terraform populates `inventory/hosts.ini` with the new instance IPs under a group (e.g. `[elasticsearch_nodes]`). This inventory file and SSH key are already referenced by `ansible.cfg`.
 2. **Run Ansible:** Execute the main playbook to install Elasticsearch on all nodes:
    ```bash
-   ansible-playbook -i inventory/hosts.ini main.yml
+   ansible-playbook -i inventory/aws_ec2.yml main.yml
    ```
    Ansible will SSH into each EC2 instance, install the specified version of Elasticsearch, configure the cluster, and start the service.
 
