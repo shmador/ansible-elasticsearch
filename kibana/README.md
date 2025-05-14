@@ -1,31 +1,39 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+An Ansible role to install and configure Kibana on RedHat and Debian‑based distributions.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- Ansible ≥ 2.9  
+- `become` privileges on target hosts  
+- YUM or APT package manager 
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+| Variable                     | Default                       | Description                                          |
+|------------------------------|-------------------------------|------------------------------------------------------|
+| `kibana_version`             | `"8.9.0"`                     | The version of Kibana to install.                    |
+| `elasticsearch_url`          | `"http://localhost:9200"`     | Elasticsearch HTTP endpoint Kibana will connect to.  |
+| `kibana_listen_host`         | `"0.0.0.0"`                   | Network interface Kibana binds to.                   |
+| `kibana_server_port`         | `5601`                        | TCP port for Kibana HTTP.                            |
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None. The role will configure the Elastic repository and install any required packages.
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+- hosts: kibana_servers
+  become: true
+  roles:
+    - ansible-kibana-role
+```
 
 License
 -------
@@ -35,4 +43,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Dor Attar
