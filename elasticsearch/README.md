@@ -13,12 +13,12 @@ Requirements
 Role Variables
 --------------
 
-Defined in `defaults/main.yml` (override as needed in your playbook or host/group vars):
+Defined in `vars/main.yml` (override as needed in your playbook or host/group vars):
 
 | Variable                      | Default                                    | Description                                               |
 |-------------------------------|--------------------------------------------|-----------------------------------------------------------|
-| `es_version`                  | `"8.9.0"`                                  | The version of Elasticsearch to install.                  |
-| `es_cluster_name`             | `"es-cluster"`                             | Name of the Elasticsearch cluster.                        |
+| `es_version`                  | `"8.x"`                                    | The version of Elasticsearch to install.                  |
+| `es_cluster_name`             | `"my-es-cluster"`                          | Name of the Elasticsearch cluster.                        |
 | `enable_security`             | `"false"`                                  | Whether to enable xpack security on the cluster           |
 
 Dependencies
