@@ -1,4 +1,4 @@
-# ansible-elasticsearch
+# elasticsearch
 
 A combined **Terraform** and **Ansible** solution to provision and configure an Elasticsearch cluster on AWS EC2.
 
